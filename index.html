@@ -65,7 +65,7 @@ footer{margin-top:56px;color:var(--sub);font-size:13px}
   <figure><img src="docs/img/model_dcf.png" alt="모델 DCF 시트"><figcaption>모델: 기업가치에서 주당가치까지</figcaption></figure>
   <figure><img src="docs/img/model_sotp.png" alt="모델 SOTP 시트"><figcaption>모델: SOTP, 부문별 배수 합산</figcaption></figure>
 </div>
-<p><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/06_ib_format_spec.md">IB 양식 규격</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/07_model_build.md">모델 빌드</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/08_data_sources.md">데이터 원천</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/05_setup_detail.md">설정 상세</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/verify_report.md">검증 리포트</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/originals/README.md">원본 코드와 설정</a></p>
+<p><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/06_ib_format_spec.md">IB 양식 규격</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/07_model_build.md">모델 빌드</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/08_data_sources.md">데이터 원천</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/05_setup_detail.md">설정 상세</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/examples/verify_report.md">검증 리포트</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/originals/README.md">원본 코드와 설정</a></p>
 
 <h2>API·데이터 범위</h2>
 <p>원천은 모두 공개 자료이고, 키는 코드에 적지 않습니다. 데이터셋은 재무제표에서 끝나지 않고 매출 세부, FCF, 순차입금, EV까지 구합니다. 샘플은 2025A, 백만원 기준입니다.</p>
@@ -138,9 +138,9 @@ footer{margin-top:56px;color:var(--sub);font-size:13px}
 <h2>데모</h2>
 <p>전처리와 감사를 실행 가능한 파이썬 패키지(<code>finprep</code>)로 만들었습니다. 공시 API 응답과 같은 모양의 가상 5개사 원자료 2,679행을 분기 tidy 데이터로 정리하고 감사 37건을 돌립니다. 키와 네트워크가 필요 없고, 테스트 67개가 Windows·Ubuntu에서 매 커밋마다 돕니다.</p>
 <p><code>pip install -e ".[dev]"</code> → <code>python -m finprep demo</code></p>
-<p><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/tree/main/src/finprep">패키지 코드</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/reports/sample/quality_report.md">품질 리포트</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/tree/main/tests">테스트</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/actions/workflows/ci.yml">CI</a></p>
-<p>표준 라이브러리만 쓰는 축약판도 있습니다: <code>python -I -X utf8 demo/preprocess_demo.py</code></p>
-<p><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/audit_log.md">감사 로그</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/preprocess_demo.py">코드</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/pitfalls.md">함정 목록</a></p>
+<p><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/tree/main/src/finprep">패키지 코드</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/examples/dataset/finprep_output/quality_report.md">품질 리포트</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/tree/main/tests">테스트</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/actions/workflows/ci.yml">CI</a></p>
+<p>표준 라이브러리만 쓰는 축약판도 있습니다: <code>python -I -X utf8 scripts/preprocess_demo.py</code></p>
+<p><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/examples/dataset/mini_demo/audit_log.md">감사 로그</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/scripts/preprocess_demo.py">코드</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/pitfalls.md">함정 목록</a></p>
 
 <footer>모든 수치는 공개 공시와 공개 시세에서 수집했습니다. 실제 파이프라인 모듈과 Claude Code 설정 원본은 originals/ 에 개인 경로와 키 위치를 가려 실었고, 키와 데이터셋 원본은 포함하지 않았습니다. 데모와 샘플은 가상 데이터로 새로 작성했습니다.</footer>
 </main>

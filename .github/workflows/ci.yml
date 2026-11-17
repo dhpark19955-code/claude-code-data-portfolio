@@ -38,4 +38,4 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         run: |
           python -m finprep demo
-          git diff --exit-code -- data/sample reports/sample
+          git diff --exit-code -- examples/dataset/raw examples/dataset/finprep_output

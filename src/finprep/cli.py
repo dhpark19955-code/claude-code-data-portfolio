@@ -21,6 +21,7 @@ from finprep.report import write_outputs
 from finprep.schema import UNIT_DIV
 
 ROOT = Path(__file__).resolve().parents[2]
+SAMPLE_DIR = ROOT / "examples" / "dataset"
 
 
 def _finish(raw: pd.DataFrame, segments, out_dir: Path, unit: str, title: str) -> int:
@@ -81,8 +82,8 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--unit", default="백만원", choices=list(UNIT_DIV), help="출력 단위")
 
     demo = sub.add_parser("demo", help="가상 원자료로 전체 흐름 실행 (키 불필요)")
-    common(demo, str(ROOT / "reports" / "sample"))
-    demo.add_argument("--data-dir", default=str(ROOT / "data" / "sample"), help="원자료 저장 폴더")
+    common(demo, str(SAMPLE_DIR / "finprep_output"))
+    demo.add_argument("--data-dir", default=str(SAMPLE_DIR / "raw"), help="원자료 저장 폴더")
     demo.add_argument("--seed", type=int, default=20261117)
     demo.set_defaults(func=cmd_demo)
 

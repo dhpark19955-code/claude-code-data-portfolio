@@ -152,4 +152,4 @@ metadata:
 
 ## 원본
 
-실제 설정 파일과 파이프라인 핵심 모듈은 [originals/](../originals/) 에 실었습니다. 개인 PC 경로와 키 파일 위치는 자리표시자로 바꿨고, 바꾼 점은 [originals/README.md](../originals/README.md) 에 적었습니다. 이 문서는 그 구조와 판단을 설명한 것이고, 실행 가능한 예시는 [demo/](../demo/) 에 가상 데이터로, 일반화한 설정 예시는 [claude-setup/](../claude-setup/) 에 있습니다.
+실제 설정 파일과 파이프라인 핵심 모듈은 [originals/](../originals/) 에 실었습니다. 개인 PC 경로와 키 파일 위치는 자리표시자로 바꿨고, 바꾼 점은 [originals/README.md](../originals/README.md) 에 적었습니다. 이 문서는 그 구조와 판단을 설명한 것이고, 실행 가능한 예시는 [scripts/](../scripts/) 와 [examples/](../examples/) 에 가상 데이터로, 일반화한 설정 예시는 [claude-setup/](claude-setup/) 에 있습니다.

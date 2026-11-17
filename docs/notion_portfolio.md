@@ -28,10 +28,10 @@
 
 | 파일 | 시트 | 검증 결과 |
 |---|---|---|
-| [`sample_dataset_ib.xlsx`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/sample_dataset_ib.xlsx) | 10개: 00_README, 01_KPI, 10_FS_연간, 11_IS_분기, 15_재무비율, 20_밸류에이션, 30_매출구성, 31_FCF, 32_순차입금, 99_Check | 오류 셀 0개, 점검 17개 전부 PASS. 단위 백만원(KPI만 억원) |
-| [`sample_model_dcf.xlsx`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/sample_model_dcf.xlsx) | 6개: Cover, Inputs, Projection, DCF, SOTP, Checks | Base, Bull, Bear 3케이스 전부 PASS |
+| [`sample_dataset_ib.xlsx`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/examples/dataset/sample_dataset_ib.xlsx) | 10개: 00_README, 01_KPI, 10_FS_연간, 11_IS_분기, 15_재무비율, 20_밸류에이션, 30_매출구성, 31_FCF, 32_순차입금, 99_Check | 오류 셀 0개, 점검 17개 전부 PASS. 단위 백만원(KPI만 억원) |
+| [`sample_model_dcf.xlsx`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/examples/modeling/sample_model_dcf.xlsx) | 6개: Cover, Inputs, Projection, DCF, SOTP, Checks | Base, Bull, Bear 3케이스 전부 PASS |
 
-검증 결과 원문: [`demo/output/verify_report.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/verify_report.md)
+검증 결과 원문: [`examples/verify_report.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/examples/verify_report.md)
 
 ## 무엇을 구할 수 있나
 
@@ -87,16 +87,16 @@
 
 | 스크립트 | 하는 일 | 필요한 것 |
 |---|---|---|
-| `demo/preprocess_demo.py` | 전처리 규칙 5개와 감사 7항목 | 파이썬만 |
-| `demo/build_ib_sample.py` | IB 양식 데이터셋 10시트, DCF·SOTP 모델 6시트 생성 | openpyxl |
-| `demo/verify_sample.py` | Excel 재계산, 오류 셀 수, 3케이스 DCF·SOTP 독립 재계산, 화면 캡처 | Windows, Excel, pywin32 |
-| `demo/verify_sample_lo.py` | 위와 같은 검증을 LibreOffice headless로. 값 계산과 캡처에만 쓰고 배포 xlsx는 openpyxl 원본 그대로 둠 | Linux, macOS, Windows. LibreOffice, openpyxl, poppler, ImageMagick |
-| `demo/independent.py` | 엑셀 수식과 무관하게 DCF·SOTP 주당가치를 다시 계산. 두 검증기가 같이 씀 | openpyxl |
-| `tools/prepublish_scan.py` | 공개 전 비밀값·경로·금지어 점검 | 파이썬만 |
+| `scripts/preprocess_demo.py` | 전처리 규칙 5개와 감사 7항목 | 파이썬만 |
+| `scripts/build_ib_sample.py` | IB 양식 데이터셋 10시트, DCF·SOTP 모델 6시트 생성 | openpyxl |
+| `scripts/verify_sample.py` | Excel 재계산, 오류 셀 수, 3케이스 DCF·SOTP 독립 재계산, 화면 캡처 | Windows, Excel, pywin32 |
+| `scripts/verify_sample_lo.py` | 위와 같은 검증을 LibreOffice headless로. 값 계산과 캡처에만 쓰고 배포 xlsx는 openpyxl 원본 그대로 둠 | Linux, macOS, Windows. LibreOffice, openpyxl, poppler, ImageMagick |
+| `scripts/independent.py` | 엑셀 수식과 무관하게 DCF·SOTP 주당가치를 다시 계산. 두 검증기가 같이 씀 | openpyxl |
+| `scripts/prepublish_scan.py` | 공개 전 비밀값·경로·금지어 점검 | 파이썬만 |
 
 ```bash
-python -I -X utf8 demo/build_ib_sample.py
-python -I -X utf8 demo/verify_sample_lo.py   # Excel이 없는 환경
+python -I -X utf8 scripts/build_ib_sample.py
+python -I -X utf8 scripts/verify_sample_lo.py   # Excel이 없는 환경
 ```
 
 ## 원본 코드와 설정
@@ -268,7 +268,7 @@ metadata:
 
 ### 원본
 
-실제 설정 파일과 파이프라인 핵심 모듈은 originals/ 에 실었습니다. 개인 PC 경로와 키 파일 위치는 자리표시자로 바꿨고, 바꾼 점은 originals/README.md 에 적었습니다. 이 문서는 그 구조와 판단을 설명한 것이고, 실행 가능한 예시는 demo/ 에 가상 데이터로, 일반화한 설정 예시는 claude-setup/ 에 있습니다.
+실제 설정 파일과 파이프라인 핵심 모듈은 originals/ 에 실었습니다. 개인 PC 경로와 키 파일 위치는 자리표시자로 바꿨고, 바꾼 점은 originals/README.md 에 적었습니다. 이 문서는 그 구조와 판단을 설명한 것이고, 실행 가능한 예시는 scripts/ 와 examples/ 에 가상 데이터로, 일반화한 설정 예시는 docs/claude-setup/ 에 있습니다.
 
 ---
 
@@ -276,7 +276,7 @@ metadata:
 
 데이터셋은 사람이 손으로 다듬지 않습니다. 서식 규칙을 코드로 고정해 두고 시트 내용만 선언하면 어느 회사든 같은 모양으로 나옵니다. 이 문서는 그 규칙과, 실제 데이터셋 1건을 열어 실측한 값을 정리한 것입니다.
 
-화면은 모두 가상 회사 '가온테크' 샘플입니다. [`demo/build_ib_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/build_ib_sample.py) 로 다시 만들 수 있습니다.
+화면은 모두 가상 회사 '가온테크' 샘플입니다. [`scripts/build_ib_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/scripts/build_ib_sample.py) 로 다시 만들 수 있습니다.
 
 ### 1. 색 규칙
 
@@ -431,7 +431,7 @@ KPI 시트의 금액은 전부 초록입니다. 재무제표, FCF, 순차입금 
 3. 감사 도구를 돌립니다.
 4. 통과하면 `YYMMDD_회사명_Data` 폴더에 같은 이름으로 배포합니다.
 
-샘플의 검증 결과는 [`demo/output/verify_report.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/verify_report.md) 에 있습니다: 시트 10개, 오류 셀 0개, 점검 17개 전부 통과. 샘플은 Excel 대신 LibreOffice headless로도 재계산할 수 있습니다([`demo/verify_sample_lo.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample_lo.py)). LibreOffice는 값 계산과 캡처에만 쓰고, 배포 파일은 openpyxl이 만든 원본 그대로입니다.
+샘플의 검증 결과는 [`examples/verify_report.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/examples/verify_report.md) 에 있습니다: 시트 10개, 오류 셀 0개, 점검 17개 전부 통과. 샘플은 Excel 대신 LibreOffice headless로도 재계산할 수 있습니다([`scripts/verify_sample_lo.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/scripts/verify_sample_lo.py)). LibreOffice는 값 계산과 캡처에만 쓰고, 배포 파일은 openpyxl이 만든 원본 그대로입니다.
 
 ### 10. 코드에서는 어떻게 쓰나
 
@@ -453,7 +453,7 @@ kp.row("  % growth", [None, "=IFERROR(D6/C6-1,\"\")", ...], kind="formula", fmt=
 
 재무모델은 엑셀을 직접 고치지 않고 **입력 파일을 고쳐 다시 빌드**합니다. 손으로 고친 모델은 무엇이 바뀌었는지 추적할 수 없고, 다음 갱신 때 같은 수정을 다시 해야 하기 때문입니다.
 
-화면은 가상 회사 샘플입니다. [`demo/build_ib_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/build_ib_sample.py) 가 6개 시트(Cover, Inputs, Projection, DCF, SOTP, Checks)로 만들고, [`demo/verify_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample.py) (Windows + Excel) 또는 [`demo/verify_sample_lo.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample_lo.py) (LibreOffice, Linux·macOS·Windows) 가 3케이스 전부를 검증합니다. DCF와 SOTP 두 방법으로 주당가치를 냅니다. 실제 엔진은 입력을 yaml 파일로 받고 유형과 점검 항목이 훨씬 많지만, 구조와 원칙은 같습니다.
+화면은 가상 회사 샘플입니다. [`scripts/build_ib_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/scripts/build_ib_sample.py) 가 6개 시트(Cover, Inputs, Projection, DCF, SOTP, Checks)로 만들고, [`scripts/verify_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/scripts/verify_sample.py) (Windows + Excel) 또는 [`scripts/verify_sample_lo.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/scripts/verify_sample_lo.py) (LibreOffice, Linux·macOS·Windows) 가 3케이스 전부를 검증합니다. DCF와 SOTP 두 방법으로 주당가치를 냅니다. 실제 엔진은 입력을 yaml 파일로 받고 유형과 점검 항목이 훨씬 많지만, 구조와 원칙은 같습니다.
 
 ### 표준 흐름
 
@@ -553,9 +553,9 @@ SOTP는 케이스에 따라 매출만 바뀌고 배수와 마진은 고정이라
 | Bull | 2,105 | 2,105 | 1,807 | 1,807 | PASS |
 | Bear | 1,076 | 1,076 | 1,660 | 1,660 | PASS |
 
-출처: [`demo/output/verify_report.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/verify_report.md) (가상 데이터)
+출처: [`examples/verify_report.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/examples/verify_report.md) (가상 데이터)
 
-검증기는 두 가지입니다. [`demo/verify_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample.py) 는 Windows의 Excel로 재계산하고, [`demo/verify_sample_lo.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample_lo.py) 는 LibreOffice headless로 같은 검증을 해서 Linux, macOS, Windows에서 돕니다. 위 표는 LibreOffice 검증기로 낸 결과이고, 엑셀 수식 값과 [`demo/independent.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/independent.py) 의 독립 재계산 차이가 3케이스 DCF·SOTP 모두 0.0000원입니다. LibreOffice는 값 계산과 화면 캡처에만 쓰고, 배포하는 xlsx는 openpyxl이 만든 원본 그대로입니다.
+검증기는 두 가지입니다. [`scripts/verify_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/scripts/verify_sample.py) 는 Windows의 Excel로 재계산하고, [`scripts/verify_sample_lo.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/scripts/verify_sample_lo.py) 는 LibreOffice headless로 같은 검증을 해서 Linux, macOS, Windows에서 돕니다. 위 표는 LibreOffice 검증기로 낸 결과이고, 엑셀 수식 값과 [`scripts/independent.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/scripts/independent.py) 의 독립 재계산 차이가 3케이스 DCF·SOTP 모두 0.0000원입니다. LibreOffice는 값 계산과 화면 캡처에만 쓰고, 배포하는 xlsx는 openpyxl이 만든 원본 그대로입니다.
 
 실제 엔진의 검증은 라벨 문자열이 아니라 고유 키로 셀을 찾고 찾은 개수를 확인합니다. 라벨이 바뀌면 엉뚱한 셀을 읽고도 통과할 수 있기 때문입니다. 샘플 검증기는 이를 단순화해 B열 라벨이 정확히 같은 첫 행을 읽고, 라벨이 없으면 오류로 멈춥니다(찾은 개수는 확인하지 않음).
 
@@ -623,7 +623,7 @@ SOTP는 케이스에 따라 매출만 바뀌고 배수와 마진은 고정이라
 
 ### 재현
 
-demo/preprocess_demo.py 가 위 규칙 중 5개를 가상 데이터로 재현합니다. 실제 파이프라인 핵심 모듈은 originals/pipeline/ 에 있고, 데모는 키 없이 돌도록 이 저장소용으로 새로 썼습니다.
+scripts/preprocess_demo.py 가 위 규칙 중 5개를 가상 데이터로 재현합니다. 실제 파이프라인 핵심 모듈은 originals/pipeline/ 에 있고, 데모는 키 없이 돌도록 이 저장소용으로 새로 썼습니다.
 
 ---
 
@@ -692,7 +692,7 @@ AI가 만든 숫자는 그럴듯해 보여서 더 위험합니다. 만든 쪽이
 
 ### 독립 검수
 
-만든 에이전트와 검수 에이전트를 분리했습니다. 검수 에이전트(checker)는 파일을 고칠 권한이 없고, 작성자의 결론이 아니라 "무엇을 어디서 확인할지"만 받아 원자료와 산출물을 직접 대조합니다. 보고는 확인한 사실, 발견한 위험, 확인 못 한 것으로 나눕니다. 정의 예시는 claude-setup/agents/checker.md 에 있습니다.
+만든 에이전트와 검수 에이전트를 분리했습니다. 검수 에이전트(checker)는 파일을 고칠 권한이 없고, 작성자의 결론이 아니라 "무엇을 어디서 확인할지"만 받아 원자료와 산출물을 직접 대조합니다. 보고는 확인한 사실, 발견한 위험, 확인 못 한 것으로 나눕니다. 정의 예시는 docs/claude-setup/agents/checker.md 에 있습니다.
 
 ---
 
@@ -752,7 +752,7 @@ Claude Code는 세션이 바뀌면 이전 맥락을 잊습니다. 그대로 쓰�
 - 웹페이지나 문서 안의 지시문은 명령이 아니라 자료로 다룹니다.
 - 로그에 키가 찍히는 버그를 한 번 겪은 뒤, 로그 출력 경로를 점검 항목에 넣었습니다.
 
-설정 예시는 claude-setup/ 에 일반화해 실었습니다.
+설정 예시는 docs/claude-setup/ 에 일반화해 실었습니다.
 
 ---
 

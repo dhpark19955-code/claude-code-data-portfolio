@@ -2,9 +2,9 @@
 """IB 양식 샘플 빌더 (가상 회사 '가온테크', 이 저장소용으로 새로 작성).
 
 산출:
-  output/sample_dataset_ib.xlsx  - 수치 전용 데이터셋 10시트
-                                   (재무제표, 매출 구성, FCF, 순차입금·순현금, EV 브리지·배수, 점검)
-  output/sample_model_dcf.xlsx   - 3케이스 스위치형 DCF + SOTP 모델 6시트
+  examples/dataset/sample_dataset_ib.xlsx   - 수치 전용 데이터셋 10시트
+                                            (재무제표, 매출 구성, FCF, 순차입금·순현금, EV 브리지·배수, 점검)
+  examples/modeling/sample_model_dcf.xlsx   - 3케이스 스위치형 DCF + SOTP 모델 6시트
 
 양식 규칙 (docs/06_ib_format_spec.md 와 같은 내용):
   파랑 = 하드코딩 입력 / 검정 = 같은 시트 수식 / 초록 = 다른 시트 링크
@@ -12,7 +12,7 @@
   A열은 여백, B열은 라벨, C열부터 데이터, 격자선 없음, 병합 대신 centerContinuous
   1행 제목, 2행 단위, 3행 출처, 4행 구획 띠, 5행 머리글, 6행부터 데이터
 
-실행:  python -I -X utf8 build_ib_sample.py   (openpyxl 필요)
+실행:  python -I -X utf8 scripts/build_ib_sample.py   (openpyxl 필요)
 수식 값은 저장하지 않는다 (fullCalcOnLoad). 계산과 검증은 verify_sample.py (Excel)
 또는 verify_sample_lo.py (LibreOffice).
 """
@@ -23,7 +23,9 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter as L
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "output")
+ROOT = os.path.dirname(HERE)
+DATASET = os.path.join(ROOT, "examples", "dataset", "sample_dataset_ib.xlsx")
+MODEL = os.path.join(ROOT, "examples", "modeling", "sample_model_dcf.xlsx")
 
 FONT = "맑은 고딕"
 BLUE, BLACK, GREEN, WHITE, GREY = "FF0000FF", "FF000000", "FF007D00", "FFFFFFFF", "FF595959"
@@ -562,9 +564,10 @@ def build_model(path):
 
 
 def main():
-    os.makedirs(OUT, exist_ok=True)
-    build_dataset(os.path.join(OUT, "sample_dataset_ib.xlsx"))
-    cells = build_model(os.path.join(OUT, "sample_model_dcf.xlsx"))
+    for path in (DATASET, MODEL):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+    build_dataset(DATASET)
+    cells = build_model(MODEL)
     print("built 2 files", cells)
 
 

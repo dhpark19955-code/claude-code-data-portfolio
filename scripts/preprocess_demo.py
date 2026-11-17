@@ -10,14 +10,14 @@
   4) 단위 혼재: 억원 출처와 백만원 출처를 백만원으로 통일한다
   5) 계정명 변형: 별칭 표로 표준 계정에 모은다 (못 모으면 0 으로 새지 않게 경고)
 
-실행:  python -I -X utf8 preprocess_demo.py
-산출:  output/tidy.csv, output/audit_log.md
+실행:  python -I -X utf8 scripts/preprocess_demo.py
+산출:  examples/dataset/mini_demo/tidy.csv, examples/dataset/mini_demo/audit_log.md
 """
 import csv
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "output")
+OUT = os.path.join(os.path.dirname(HERE), "examples", "dataset", "mini_demo")
 
 # ---------------------------------------------------------------- 가상 원자료
 # (출처, 재무제표, 계정명, 기간, 금액, 단위)

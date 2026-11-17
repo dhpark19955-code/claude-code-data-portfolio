@@ -36,4 +36,4 @@
 
 ## 재현
 
-[src/finprep/](../src/finprep/) 이 위 규칙 중 기간, 부호, 단위, 계정명 규칙을 실행 가능한 패키지로 구현하고 테스트 67개로 검증합니다 (`python -m finprep demo`). [demo/preprocess_demo.py](../demo/preprocess_demo.py) 는 표준 라이브러리만으로 규칙 5개를 보여 주는 축약판입니다. 실제 파이프라인 핵심 모듈은 [originals/pipeline/](../originals/pipeline/) 에 있고, 데모는 키 없이 돌도록 이 저장소용으로 새로 썼습니다.
+[src/finprep/](../src/finprep/) 이 위 규칙 중 기간, 부호, 단위, 계정명 규칙을 실행 가능한 패키지로 구현하고 테스트 67개로 검증합니다 (`python -m finprep demo`). [scripts/preprocess_demo.py](../scripts/preprocess_demo.py) 는 표준 라이브러리만으로 규칙 5개를 보여 주는 축약판입니다. 실제 파이프라인 핵심 모듈은 [originals/pipeline/](../originals/pipeline/) 에 있고, 데모는 키 없이 돌도록 이 저장소용으로 새로 썼습니다.

@@ -10,7 +10,7 @@ verify_sample.py (Excel) 와 같은 검증을 Excel 없이 한다.
 
 LibreOffice 가 다시 저장한 xlsx 는 서식이 달라지므로 값 계산과 캡처에만 쓰고 배포 파일은 건드리지 않는다.
 필요: soffice (PATH), openpyxl, pdftoppm (poppler), ImageMagick (magick 또는 convert)
-실행: python -I -X utf8 verify_sample_lo.py
+실행: python -I -X utf8 scripts/verify_sample_lo.py
 """
 import os
 import shutil
@@ -26,8 +26,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)  # -I 옵션은 스크립트 폴더를 검색 경로에 넣지 않는다
 from independent import CASES, COVER, SHOTS, independent_per_share, independent_sotp, render_report  # noqa: E402
 
-OUT = os.path.join(HERE, "output")
-IMG = os.path.join(os.path.dirname(HERE), "docs", "img")
+ROOT = os.path.dirname(HERE)
+EX = os.path.join(ROOT, "examples")
+DATASET = os.path.join(EX, "dataset", "sample_dataset_ib.xlsx")
+MODEL = os.path.join(EX, "modeling", "sample_model_dcf.xlsx")
+REPORT = os.path.join(EX, "verify_report.md")
+IMG = os.path.join(ROOT, "docs", "img")
 SOFFICE = shutil.which("soffice") or shutil.which("libreoffice")
 MAGICK = [shutil.which("magick")] if shutil.which("magick") else [shutil.which("convert")]
 
@@ -140,7 +144,7 @@ def main():
     try:
         engine = "%s headless (verify_sample_lo.py)" % version()
         # ---- 데이터셋
-        src = os.path.join(OUT, "sample_dataset_ib.xlsx")
+        src = DATASET
         fwb, vwb = recalc(lo, src, os.path.join(tmp, "dataset"))
         err = count_errors(fwb, vwb)
         master, n_checks, fails = read_checks(vwb["99_Check"], 5)
@@ -151,7 +155,7 @@ def main():
                 done.append(f)
 
         # ---- 모델: 케이스마다 사본의 스위치를 바꿔 재계산
-        src = os.path.join(OUT, "sample_model_dcf.xlsx")
+        src = MODEL
         cover = load_workbook(src)["Cover"]
         row = {k: find_row(cover, v) for k, v in COVER.items()}
         for i, case in enumerate(CASES):
@@ -174,7 +178,7 @@ def main():
 
     ok &= len(done) == len(SHOTS["dataset"]) + len(SHOTS["model"])
     lines = render_report(engine, ds, model_rows, len(done), ok)
-    with open(os.path.join(OUT, "verify_report.md"), "w", encoding="utf-8") as f:
+    with open(REPORT, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("\n".join(lines))
     return 0 if ok else 1

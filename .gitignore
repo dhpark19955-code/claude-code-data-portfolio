@@ -9,15 +9,14 @@ keys.*
 *.xlsx
 *.xlsm
 *.pdf
-data/*
-!data/sample/
-raw/
+/data/
+/raw/
 # 예외: 가상 데이터 샘플 2종
-!demo/output/sample_dataset_ib.xlsx
-!demo/output/sample_model_dcf.xlsx
+!examples/dataset/sample_dataset_ib.xlsx
+!examples/modeling/sample_model_dcf.xlsx
 
 # 공개 전 점검용 금지어 목록 (회사명, 종목명 등. 올리지 않음)
-tools/denylist.local.txt
+scripts/denylist.local.txt
 
 # 환경
 __pycache__/

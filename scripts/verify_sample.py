@@ -5,10 +5,10 @@
   2) 각 파일의 Master check 와 개별 점검을 읽는다. 행 번호는 B열 라벨로 찾는다
   3) 모델은 케이스 스위치를 1, 2, 3 으로 바꿔 가며 DCF·SOTP 주당가치를 읽고,
      엑셀 수식과 무관하게 파이썬으로 다시 계산한 값(independent.py)과 대조한다 (Base 만 보고 통과시키지 않음)
-  4) 화면 캡처를 docs/img 에 저장한다
+  4) 화면 캡처를 docs/img 에 저장한다. 결과는 examples/verify_report.md
 
 한글 경로에서 Excel 자동화가 실패하는 경우가 있어 임시 폴더(영문 경로)로 복사해 작업한 뒤 되돌린다.
-실행:  python -I -X utf8 verify_sample.py
+실행:  python -I -X utf8 scripts/verify_sample.py
 """
 import os
 import shutil
@@ -22,8 +22,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)  # -I 옵션은 스크립트 폴더를 검색 경로에 넣지 않는다
 from independent import CASES, COVER, SHOTS, independent_per_share, independent_sotp, render_report  # noqa: E402
 
-OUT = os.path.join(HERE, "output")
-IMG = os.path.join(os.path.dirname(HERE), "docs", "img")
+ROOT = os.path.dirname(HERE)
+EX = os.path.join(ROOT, "examples")
+DATASET = os.path.join(EX, "dataset", "sample_dataset_ib.xlsx")
+MODEL = os.path.join(EX, "modeling", "sample_model_dcf.xlsx")
+REPORT = os.path.join(EX, "verify_report.md")
+IMG = os.path.join(ROOT, "docs", "img")
 XL_ERRORS = 16  # xlCellTypeFormulas 의 xlErrors
 
 
@@ -83,7 +87,7 @@ def main():
         engine = "Microsoft Excel %s (verify_sample.py)" % xl.Version
         # ---- 데이터셋
         name = "sample_dataset_ib.xlsx"
-        p = shutil.copy(os.path.join(OUT, name), os.path.join(tmp, name))
+        p = shutil.copy(DATASET, os.path.join(tmp, name))
         wb = xl.Workbooks.Open(p)
         xl.CalculateFull()
         err = count_errors(wb)
@@ -92,11 +96,11 @@ def main():
         ok &= err == 0 and master == "PASS" and not fails
         done = [f for s, r, f in SHOTS["dataset"] if snap(xl, wb.Worksheets(s), r, os.path.join(IMG, f))]
         wb.Save(); wb.Close(False)
-        shutil.copy(p, os.path.join(OUT, name))
+        shutil.copy(p, DATASET)
 
         # ---- 모델
         name = "sample_model_dcf.xlsx"
-        p = shutil.copy(os.path.join(OUT, name), os.path.join(tmp, name))
+        p = shutil.copy(MODEL, os.path.join(tmp, name))
         wb = xl.Workbooks.Open(p)
         cv = wb.Worksheets("Cover")
         row = {k: find_row(cv, v) for k, v in COVER.items()}
@@ -115,14 +119,14 @@ def main():
         xl.CalculateFull()
         done += [f for s, r, f in SHOTS["model"] if snap(xl, wb.Worksheets(s), r, os.path.join(IMG, f))]
         wb.Save(); wb.Close(False)
-        shutil.copy(p, os.path.join(OUT, name))
+        shutil.copy(p, MODEL)
     finally:
         xl.Quit()
         shutil.rmtree(tmp, ignore_errors=True)
 
     ok &= len(done) == len(SHOTS["dataset"]) + len(SHOTS["model"])
     lines = render_report(engine, ds, model_rows, len(done), ok)
-    with open(os.path.join(OUT, "verify_report.md"), "w", encoding="utf-8") as f:
+    with open(REPORT, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("ok=%s shots=%d" % (ok, len(done)))
     return 0 if ok else 1

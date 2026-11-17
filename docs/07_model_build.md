@@ -2,7 +2,7 @@
 
 재무모델은 엑셀을 직접 고치지 않고 **입력 파일을 고쳐 다시 빌드**합니다. 손으로 고친 모델은 무엇이 바뀌었는지 추적할 수 없고, 다음 갱신 때 같은 수정을 다시 해야 하기 때문입니다.
 
-화면은 가상 회사 샘플입니다. [demo/build_ib_sample.py](../demo/build_ib_sample.py) 가 6개 시트(Cover, Inputs, Projection, DCF, SOTP, Checks)로 만들고, [demo/verify_sample.py](../demo/verify_sample.py) (Windows + Excel) 또는 [demo/verify_sample_lo.py](../demo/verify_sample_lo.py) (LibreOffice, Linux·macOS·Windows) 가 3케이스 전부를 검증합니다. DCF와 SOTP 두 방법으로 주당가치를 냅니다. 실제 엔진은 입력을 yaml 파일로 받고 유형과 점검 항목이 훨씬 많지만, 구조와 원칙은 같습니다.
+화면은 가상 회사 샘플입니다. [scripts/build_ib_sample.py](../scripts/build_ib_sample.py) 가 6개 시트(Cover, Inputs, Projection, DCF, SOTP, Checks)로 만들고, [scripts/verify_sample.py](../scripts/verify_sample.py) (Windows + Excel) 또는 [scripts/verify_sample_lo.py](../scripts/verify_sample_lo.py) (LibreOffice, Linux·macOS·Windows) 가 3케이스 전부를 검증합니다. DCF와 SOTP 두 방법으로 주당가치를 냅니다. 실제 엔진은 입력을 yaml 파일로 받고 유형과 점검 항목이 훨씬 많지만, 구조와 원칙은 같습니다.
 
 ## 표준 흐름
 
@@ -102,9 +102,9 @@ SOTP는 케이스에 따라 매출만 바뀌고 배수와 마진은 고정이라
 | Bull | 2,105 | 2,105 | 1,807 | 1,807 | PASS |
 | Bear | 1,076 | 1,076 | 1,660 | 1,660 | PASS |
 
-출처: [demo/output/verify_report.md](../demo/output/verify_report.md) (가상 데이터)
+출처: [examples/verify_report.md](../examples/verify_report.md) (가상 데이터)
 
-검증기는 두 가지입니다. [demo/verify_sample.py](../demo/verify_sample.py) 는 Windows의 Excel로 재계산하고, [demo/verify_sample_lo.py](../demo/verify_sample_lo.py) 는 LibreOffice headless로 같은 검증을 해서 Linux, macOS, Windows에서 돕니다. 위 표는 LibreOffice 검증기로 낸 결과이고, 엑셀 수식 값과 [demo/independent.py](../demo/independent.py) 의 독립 재계산 차이가 3케이스 DCF·SOTP 모두 0.0000원입니다. LibreOffice는 값 계산과 화면 캡처에만 쓰고, 배포하는 xlsx는 openpyxl이 만든 원본 그대로입니다.
+검증기는 두 가지입니다. [scripts/verify_sample.py](../scripts/verify_sample.py) 는 Windows의 Excel로 재계산하고, [scripts/verify_sample_lo.py](../scripts/verify_sample_lo.py) 는 LibreOffice headless로 같은 검증을 해서 Linux, macOS, Windows에서 돕니다. 위 표는 LibreOffice 검증기로 낸 결과이고, 엑셀 수식 값과 [scripts/independent.py](../scripts/independent.py) 의 독립 재계산 차이가 3케이스 DCF·SOTP 모두 0.0000원입니다. LibreOffice는 값 계산과 화면 캡처에만 쓰고, 배포하는 xlsx는 openpyxl이 만든 원본 그대로입니다.
 
 실제 엔진의 검증은 라벨 문자열이 아니라 고유 키로 셀을 찾고 찾은 개수를 확인합니다. 라벨이 바뀌면 엉뚱한 셀을 읽고도 통과할 수 있기 때문입니다. 샘플 검증기는 이를 단순화해 B열 라벨이 정확히 같은 첫 행을 읽고, 라벨이 없으면 오류로 멈춥니다(찾은 개수는 확인하지 않음).
 

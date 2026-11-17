@@ -2,7 +2,7 @@
 
 데이터셋은 사람이 손으로 다듬지 않습니다. 서식 규칙을 코드로 고정해 두고 시트 내용만 선언하면 어느 회사든 같은 모양으로 나옵니다. 이 문서는 그 규칙과, 실제 데이터셋 1건을 열어 실측한 값을 정리한 것입니다.
 
-화면은 모두 가상 회사 '가온테크' 샘플입니다. [demo/build_ib_sample.py](../demo/build_ib_sample.py) 로 다시 만들 수 있습니다.
+화면은 모두 가상 회사 '가온테크' 샘플입니다. [scripts/build_ib_sample.py](../scripts/build_ib_sample.py) 로 다시 만들 수 있습니다.
 
 ## 1. 색 규칙
 
@@ -157,7 +157,7 @@ KPI 시트의 금액은 전부 초록입니다. 재무제표, FCF, 순차입금 
 3. 감사 도구를 돌립니다.
 4. 통과하면 `YYMMDD_회사명_Data` 폴더에 같은 이름으로 배포합니다.
 
-샘플의 검증 결과는 [demo/output/verify_report.md](../demo/output/verify_report.md) 에 있습니다: 시트 10개, 오류 셀 0개, 점검 17개 전부 통과. 샘플은 Excel 대신 LibreOffice headless로도 재계산할 수 있습니다([demo/verify_sample_lo.py](../demo/verify_sample_lo.py)). LibreOffice는 값 계산과 캡처에만 쓰고, 배포 파일은 openpyxl이 만든 원본 그대로입니다.
+샘플의 검증 결과는 [examples/verify_report.md](../examples/verify_report.md) 에 있습니다: 시트 10개, 오류 셀 0개, 점검 17개 전부 통과. 샘플은 Excel 대신 LibreOffice headless로도 재계산할 수 있습니다([scripts/verify_sample_lo.py](../scripts/verify_sample_lo.py)). LibreOffice는 값 계산과 캡처에만 쓰고, 배포 파일은 openpyxl이 만든 원본 그대로입니다.
 
 ## 10. 코드에서는 어떻게 쓰나
 

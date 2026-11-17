@@ -101,5 +101,5 @@
 | 파이프라인 | [run_pipeline.py](../originals/pipeline/run_pipeline.py), [dart_listed_fs.py](../originals/pipeline/dart_listed_fs.py), [naver_market.py](../originals/pipeline/naver_market.py), [fs_summary.py](../originals/pipeline/fs_summary.py) |
 | 파생·감사 | [hist_valuation.py](../originals/pipeline/hist_valuation.py), [share_utils.py](../originals/pipeline/share_utils.py), [dataset_audit.py](../originals/pipeline/dataset_audit.py) |
 | 스킬 원문 | [company-dataset-ib](../originals/claude/skills/company-dataset-ib/SKILL.md), [함정 모음](../originals/claude/skills/company-dataset-ib/references/pitfalls.md), [fin-data-fetch](../originals/claude/skills/fin-data-fetch/SKILL.md) |
-| 샘플 | [demo/build_ib_sample.py](../demo/build_ib_sample.py) |
+| 샘플 | [scripts/build_ib_sample.py](../scripts/build_ib_sample.py) |
 | 관련 문서 | [IB 양식 규격](../docs/06_ib_format_spec.md), [모델 빌드](../docs/07_model_build.md) |
