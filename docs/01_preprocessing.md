@@ -36,4 +36,4 @@
 
 ## 재현
 
-[demo/preprocess_demo.py](../demo/preprocess_demo.py) 가 위 규칙 중 5개를 가상 데이터로 재현합니다. 실제 파이프라인 코드는 재직 중 작성한 것이라 싣지 않았고, 데모는 이 저장소용으로 새로 썼습니다.
+[demo/preprocess_demo.py](../demo/preprocess_demo.py) 가 위 규칙 중 5개를 가상 데이터로 재현합니다. 실제 파이프라인 핵심 모듈은 [originals/pipeline/](../originals/pipeline/) 에 있고, 데모는 키 없이 돌도록 이 저장소용으로 새로 썼습니다.

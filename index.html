@@ -32,6 +32,10 @@ a{color:var(--acc)}
 table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
 th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
 th{color:var(--sub);font-weight:600}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:0 0 16px}
+.shots figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px}
+.shots img{width:100%;height:auto;display:block}
+.shots figcaption{font-size:13px;color:#5b6470;margin-top:8px}
 code{background:var(--acc-soft);padding:2px 6px;border-radius:4px;font-size:13px}
 footer{margin-top:56px;color:var(--sub);font-size:13px}
 </style>
@@ -48,6 +52,16 @@ footer{margin-top:56px;color:var(--sub);font-size:13px}
   <div class="stat"><b>3</b><span>서브에이전트<br>구현, 보조, 검수</span></div>
   <div class="stat"><b>149</b><span>누적 작업 메모<br>함정, 결정, 출처</span></div>
 </div>
+
+<h2>결과물</h2>
+<p>가상 회사 샘플입니다. 사람이 다듬지 않고 코드가 만든 그대로입니다. 파랑은 입력한 원자료, 검정은 같은 시트 수식, 초록은 다른 시트 링크입니다.</p>
+<div class="shots">
+  <figure><img src="docs/img/dataset_kpi.png" alt="데이터셋 KPI 시트"><figcaption>데이터셋: KPI 시트</figcaption></figure>
+  <figure><img src="docs/img/dataset_valuation.png" alt="데이터셋 밸류에이션 시트"><figcaption>데이터셋: 배수와 역산 검증</figcaption></figure>
+  <figure><img src="docs/img/model_inputs.png" alt="모델 Inputs 시트"><figcaption>모델: 입력은 한 시트에만</figcaption></figure>
+  <figure><img src="docs/img/model_dcf.png" alt="모델 DCF 시트"><figcaption>모델: 기업가치에서 주당가치까지</figcaption></figure>
+</div>
+<p><a href="docs/06_ib_format_spec.md">IB 양식 규격</a> · <a href="docs/07_model_build.md">모델 빌드</a> · <a href="docs/05_setup_detail.md">설정 상세</a> · <a href="demo/output/verify_report.md">검증 리포트</a> · <a href="originals/README.md">원본 코드와 설정</a></p>
 
 <h2>작업 흐름</h2>
 <ol class="flow">
@@ -98,7 +112,7 @@ footer{margin-top:56px;color:var(--sub);font-size:13px}
 <p><code>python -I -X utf8 demo/preprocess_demo.py</code></p>
 <p><a href="demo/output/audit_log.md">감사 로그</a> · <a href="demo/preprocess_demo.py">코드</a> · <a href="pitfalls.md">함정 목록</a></p>
 
-<footer>모든 수치는 공개 공시와 공개 시세에서 수집했습니다. 재직 회사의 내부 자료, 비공개 자료, 원본 코드는 포함하지 않았고 데모는 가상 데이터로 새로 작성했습니다.</footer>
+<footer>모든 수치는 공개 공시와 공개 시세에서 수집했습니다. 실제 파이프라인 모듈과 Claude Code 설정 원본은 originals/ 에 개인 경로와 키 위치를 가려 실었고, 키와 데이터셋 원본은 포함하지 않았습니다. 데모와 샘플은 가상 데이터로 새로 작성했습니다.</footer>
 </main>
 </body>
 </html>
