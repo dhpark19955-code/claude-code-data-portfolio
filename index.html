@@ -54,14 +54,42 @@ footer{margin-top:56px;color:var(--sub);font-size:13px}
 </div>
 
 <h2>결과물</h2>
-<p>가상 회사 샘플입니다. 사람이 다듬지 않고 코드가 만든 그대로입니다. 파랑은 입력한 원자료, 검정은 같은 시트 수식, 초록은 다른 시트 링크입니다.</p>
+<p>가상 회사 샘플입니다. 사람이 다듬지 않고 코드가 만든 그대로입니다. 파랑은 입력한 원자료, 검정은 같은 시트 수식, 초록은 다른 시트 링크입니다. 데이터셋 10개 시트(오류 셀 0개, 점검 17개 전부 PASS), 모델 6개 시트(Base·Bull·Bear 3케이스 전부 PASS)입니다.</p>
 <div class="shots">
   <figure><img src="docs/img/dataset_kpi.png" alt="데이터셋 KPI 시트"><figcaption>데이터셋: KPI 시트</figcaption></figure>
-  <figure><img src="docs/img/dataset_valuation.png" alt="데이터셋 밸류에이션 시트"><figcaption>데이터셋: 배수와 역산 검증</figcaption></figure>
+  <figure><img src="docs/img/dataset_valuation.png" alt="데이터셋 밸류에이션 시트"><figcaption>데이터셋: EV 산출(시총 + 순차입금 + 비지배 − 관계기업)과 배수 역산</figcaption></figure>
+  <figure><img src="docs/img/dataset_revenue.png" alt="데이터셋 매출구성 시트"><figcaption>데이터셋: 부문·지역 매출, 연결 매출과 차이 0</figcaption></figure>
+  <figure><img src="docs/img/dataset_fcf.png" alt="데이터셋 FCF 시트"><figcaption>데이터셋: FCF, 현금전환율, FCF yield</figcaption></figure>
+  <figure><img src="docs/img/dataset_netdebt.png" alt="데이터셋 순차입금 시트"><figcaption>데이터셋: 순차입금(리스 제외·포함)과 순현금</figcaption></figure>
   <figure><img src="docs/img/model_inputs.png" alt="모델 Inputs 시트"><figcaption>모델: 입력은 한 시트에만</figcaption></figure>
   <figure><img src="docs/img/model_dcf.png" alt="모델 DCF 시트"><figcaption>모델: 기업가치에서 주당가치까지</figcaption></figure>
+  <figure><img src="docs/img/model_sotp.png" alt="모델 SOTP 시트"><figcaption>모델: SOTP, 부문별 배수 합산</figcaption></figure>
 </div>
-<p><a href="docs/06_ib_format_spec.md">IB 양식 규격</a> · <a href="docs/07_model_build.md">모델 빌드</a> · <a href="docs/05_setup_detail.md">설정 상세</a> · <a href="demo/output/verify_report.md">검증 리포트</a> · <a href="originals/README.md">원본 코드와 설정</a></p>
+<p><a href="docs/06_ib_format_spec.md">IB 양식 규격</a> · <a href="docs/07_model_build.md">모델 빌드</a> · <a href="docs/08_data_sources.md">데이터 원천</a> · <a href="docs/05_setup_detail.md">설정 상세</a> · <a href="demo/output/verify_report.md">검증 리포트</a> · <a href="originals/README.md">원본 코드와 설정</a></p>
+
+<h2>API·데이터 범위</h2>
+<p>원천은 모두 공개 자료이고, 키는 코드에 적지 않습니다. 데이터셋은 재무제표에서 끝나지 않고 매출 세부, FCF, 순차입금, EV까지 구합니다. 샘플은 2025A, 백만원 기준입니다.</p>
+<div class="tablewrap">
+<table>
+<tr><th>원천</th><th>주요 엔드포인트</th><th>받는 것</th></tr>
+<tr><td>공시 API (OpenDART)</td><td><code>fnlttSinglAcntAll.json</code>, <code>stockTotqySttus.json</code>, <code>majorstock.json</code>, <code>document.xml</code> 등</td><td>재무제표 전 계정, 주식 총수, 지분 보고, 공시 원문</td></tr>
+<tr><td>시세 (네이버 증권 JSON)</td><td><code>m.stock.naver.com/api/stock/{code}/integration</code>, <code>api.stock.naver.com/chart/domestic/item/{code}/day</code> 등</td><td>종가, 시총·투자지표, 일별 시세, 수급, 컨센서스</td></tr>
+<tr><td>통계 (KOSIS)</td><td><code>statisticsParameterData.do</code>, <code>getMeta</code></td><td>업종 통계</td></tr>
+<tr><td>해외 (SEC EDGAR 등)</td><td>companyfacts, 20-F·6-K, Form 4, 13F, ESEF <code>filings.xbrl.org</code></td><td>해외 상장사 재무, 내부자 매매, 기관 보유</td></tr>
+</table>
+</div>
+<div class="tablewrap">
+<table>
+<tr><th>구하는 것</th><th>시트</th><th>샘플 수치</th><th>자동화</th></tr>
+<tr><td>부문·지역 매출</td><td>30_매출구성</td><td>부문 합계 530,000 = 연결 매출(차이 0), 해외 비중 24.5%</td><td>반자동 (원문 표 해석은 체크리스트 수작업)</td></tr>
+<tr><td>FCF</td><td>31_FCF</td><td>86,000 + (41,000) + (7,000) = 38,000, FCF yield 4.0%</td><td>자동 (CAPEX 수집 스크립트는 미수록)</td></tr>
+<tr><td>순차입금·순현금</td><td>32_순차입금</td><td>240,000 − 110,000 = 130,000, 리스 포함 155,000</td><td>자동 + 별칭 누락 경고</td></tr>
+<tr><td>EV 산출</td><td>20_밸류에이션</td><td>960,000 + 130,000 + 35,000 − 70,000 = 1,055,000</td><td>자동 (시트 수식)</td></tr>
+<tr><td>배수와 역산</td><td>20_밸류에이션</td><td>PER 20.2x, PBR 1.8x, EV/EBITDA 11.0x, EV/Sales 2.0x, 모두 시총 960,000으로 역산</td><td>자동</td></tr>
+<tr><td>SOTP</td><td>모델 SOTP 시트</td><td>영업 EV 948,066, 주당가치 1,733원 (DCF 1,572원)</td><td>데이터셋 밖 별도 모델, 배수는 판단값</td></tr>
+</table>
+</div>
+<p><a href="docs/08_data_sources.md">엔드포인트, 계산 방법, 정의 전체</a></p>
 
 <h2>작업 흐름</h2>
 <ol class="flow">

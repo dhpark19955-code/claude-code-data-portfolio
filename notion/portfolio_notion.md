@@ -24,7 +24,58 @@
 | ![KPI](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_kpi.png) | ![DCF](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/model_dcf.png) |
 
 - 파랑은 입력한 원자료, 검정은 같은 시트 수식, 초록은 다른 시트 링크입니다. 셀을 누르지 않아도 숫자의 출처가 보입니다.
-- 모델은 스위치 한 칸으로 Base, Bull, Bear가 바뀌고, 세 케이스 모두 엑셀과 무관한 독립 재계산과 대조했습니다.
+- 모델은 스위치 한 칸으로 Base, Bull, Bear가 바뀌고, 세 케이스 모두 DCF와 SOTP 주당가치를 엑셀과 무관한 독립 재계산과 대조했습니다.
+
+| 파일 | 시트 | 검증 결과 |
+|---|---|---|
+| [`sample_dataset_ib.xlsx`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/sample_dataset_ib.xlsx) | 10개: 00_README, 01_KPI, 10_FS_연간, 11_IS_분기, 15_재무비율, 20_밸류에이션, 30_매출구성, 31_FCF, 32_순차입금, 99_Check | 오류 셀 0개, 점검 17개 전부 PASS. 단위 백만원(KPI만 억원) |
+| [`sample_model_dcf.xlsx`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/sample_model_dcf.xlsx) | 6개: Cover, Inputs, Projection, DCF, SOTP, Checks | Base, Bull, Bear 3케이스 전부 PASS |
+
+검증 결과 원문: [`demo/output/verify_report.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/verify_report.md)
+
+## 무엇을 구할 수 있나
+
+데이터셋은 재무제표에서 끝나지 않고 매출 세부, FCF, 순차입금, EV까지 구합니다. SOTP는 데이터셋 밖의 별도 모델에서 만듭니다. 샘플 수치는 가상 회사 '가온테크'의 2025A(SOTP는 2026E Base) 값이고 단위는 백만원입니다.
+
+| 항목 | 담기는 시트 | 샘플 수치 | 자동화 범위 |
+|---|---|---|---|
+| 부문·제품 매출 | 30_매출구성 | 플랫폼 310,000 / 솔루션 220,000 / 기타 6,000 / 내부거래 제거 (6,000) = 530,000. 연결 매출과 차이 0. 부문 영업이익 합 69,000 = 연결 영업이익. 플랫폼 비중 58.5% | 반자동. 원문 수집은 자동, 사업보고서 XML 표 해석은 회사별 작업이라 파이프라인 7단계 체크리스트에 수작업 항목으로 나옴 |
+| 지역 매출 | 30_매출구성 | 국내 400,000 / 해외 130,000. 해외 비중 24.5% | 반자동. 위와 같음 |
+| FCF | 31_FCF | 영업활동현금흐름 86,000 + 유형자산 취득 (41,000) + 무형자산 취득 (7,000) = 38,000. FCF 마진 7.2%, 현금전환율 79.8%, 배당 후 FCF 24,000, FCF yield 4.0% | 자동. 다만 CAPEX 수집 스크립트(`fetch_capex.py`)는 이 저장소에 없음 |
+| 순차입금·순현금 | 32_순차입금 | 총차입금 240,000 − 현금 110,000 = 순차입금 130,000. 리스 포함 155,000. 순현금 (130,000). 순차입금/EBITDA 1.4x | 자동. 차입금 별칭 누락은 경고로 잡음 |
+| EV 산출 | 20_밸류에이션 | 시가총액 960,000 + 순차입금 130,000 + 비지배지분 35,000 − 관계기업투자 70,000 = EV 1,055,000 | 자동 (시트 수식) |
+| 배수와 역산 | 20_밸류에이션, 99_Check | PER 20.2x, PBR 1.8x, EV/EBITDA 11.0x, EV/Sales 2.0x. 네 배수 모두 역산하면 시가총액 960,000 | 자동 (시트 수식과 감사 도구) |
+| SOTP | 모델의 SOTP 시트 | 플랫폼 663,011 + 솔루션 285,055 = 영업 EV 948,066 → 주당가치 1,733원 (DCF 1,572원) | 데이터셋 밖의 별도 모델 워크플로우. 부문 배수와 할인율은 사람이 정하는 판단값 |
+
+- 순차입금은 양수면 순차입, 음수면 순현금입니다. 리스부채는 기본 순차입금에서 빼고 '리스 포함' 행에만 더합니다.
+- FCF의 CAPEX는 유출이라 음수로 저장하고, FCF = 영업활동현금흐름 + 유형 + 무형으로 더합니다.
+- 각 항목의 원천, 계산 방법, 정의는 [`docs/08_data_sources.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/08_data_sources.md) 에 있습니다.
+
+| 데이터셋: 매출 구성 | 데이터셋: FCF |
+|---|---|
+| ![매출 구성](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_revenue.png) | ![FCF](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_fcf.png) |
+
+| 데이터셋: 순차입금 | 데이터셋: EV 산출과 배수 역산 |
+|---|---|
+| ![순차입금](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_netdebt.png) | ![밸류에이션](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_valuation.png) |
+
+| 모델: SOTP |
+|---|
+| ![SOTP](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/model_sotp.png) |
+
+## 사용하는 API
+
+원천은 모두 공개 자료입니다. 키는 환경변수나 키 파일에서 읽고 코드에 적지 않습니다. 엔드포인트별 파라미터, 받는 것, 코드 위치, 막힌 경로와 대체는 [`docs/08_data_sources.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/08_data_sources.md) 에 있습니다.
+
+| 원천 | 주요 엔드포인트 | 받는 것 | 키 |
+|---|---|---|---|
+| 공시 API (OpenDART) | `fnlttSinglAcntAll.json`, `stockTotqySttus.json`, `majorstock.json`, `elestock.json`, `alotMatter`, `hyslrSttus`, `tesstkAcqsDspsSttus`, `corpCode.xml`, `document.xml` | 재무제표 전 계정(현금흐름표의 CAPEX 줄 포함), 주식 총수, 지분 보고, 배당, 자기주식, 공시 원문 | DART |
+| 시세 (네이버 증권 JSON) | `polling.finance.naver.com/api/realtime/domestic/stock/{code}`, `m.stock.naver.com/api/stock/{code}/integration`, `api.stock.naver.com/chart/domestic/item/{code}/day`, `fchart.stock.naver.com/siseJson.naver`, `m.stock.naver.com/api/stock/{code}/trend`, `m.stock.naver.com/api/stock/{code}/finance/annual` · `/finance/quarter` | 종가, 시총·투자지표, 일별 시세, 투자자별 수급, 재무요약·컨센서스 | 없음 |
+| 통계 (KOSIS) | `statisticsParameterData.do`, `getMeta` | 업종 통계 | KOSIS |
+| 해외 (SEC EDGAR 등) | SEC companyfacts, XBRL 인스턴스, 20-F·6-K, Form 4, 13F. 유럽은 ESEF `filings.xbrl.org` | 해외 상장사 재무, 내부자 매매, 기관 보유 | SEC_USER_AGENT (SEC만) |
+| IR 자료 | 회사 IR 메뉴, 공시 목록의 IR 개최·공정공시, IRGO `m.irgo.co.kr/IR-COMP/` 뒤에 종목코드 | IR 덱 KPI | 없음 |
+
+재무제표·주식 총수·지분 보고 수집과 네이버 시세 모듈은 [`originals/pipeline/`](https://github.com/dhpark19955-code/claude-code-data-portfolio/tree/main/originals/pipeline) 에 코드가 있습니다. 배당·자기주식·CAPEX·공시 원문 수집, KOSIS, 해외 원천은 스킬 문서 기준이라 수집 스크립트가 이 저장소에 없습니다.
 
 
 ## 작업 흐름
@@ -36,13 +87,16 @@
 
 | 스크립트 | 하는 일 | 필요한 것 |
 |---|---|---|
-| demo/preprocess_demo.py | 전처리 규칙 5개와 감사 7항목 | 파이썬만 |
-| demo/build_ib_sample.py | IB 양식 데이터셋 8시트, DCF 모델 5시트 생성 | openpyxl |
-| demo/verify_sample.py | Excel 재계산, 오류 셀 수, 3케이스 독립 재계산, 화면 캡처 | Windows, Excel, pywin32 |
-| tools/prepublish_scan.py | 공개 전 비밀값·경로·금지어 점검 | 파이썬만 |
+| `demo/preprocess_demo.py` | 전처리 규칙 5개와 감사 7항목 | 파이썬만 |
+| `demo/build_ib_sample.py` | IB 양식 데이터셋 10시트, DCF·SOTP 모델 6시트 생성 | openpyxl |
+| `demo/verify_sample.py` | Excel 재계산, 오류 셀 수, 3케이스 DCF·SOTP 독립 재계산, 화면 캡처 | Windows, Excel, pywin32 |
+| `demo/verify_sample_lo.py` | 위와 같은 검증을 LibreOffice headless로. 값 계산과 캡처에만 쓰고 배포 xlsx는 openpyxl 원본 그대로 둠 | Linux, macOS, Windows. LibreOffice, openpyxl, poppler, ImageMagick |
+| `demo/independent.py` | 엑셀 수식과 무관하게 DCF·SOTP 주당가치를 다시 계산. 두 검증기가 같이 씀 | openpyxl |
+| `tools/prepublish_scan.py` | 공개 전 비밀값·경로·금지어 점검 | 파이썬만 |
 
 ```bash
 python -I -X utf8 demo/build_ib_sample.py
+python -I -X utf8 demo/verify_sample_lo.py   # Excel이 없는 환경
 ```
 
 ## 원본 코드와 설정
@@ -93,7 +147,7 @@ python -I -X utf8 demo/build_ib_sample.py
 
 | 절 | 내용 | 왜 여기 두었나 |
 |---|---|---|
-| 우선순위 | 조직 보안 지침 > 전역 지침 > 기본 동작 | 충돌할 때 무엇을 따를지 미리 정해 둠 |
+| 우선순위 | 조직 보안 지침 \> 전역 지침 \> 기본 동작 | 충돌할 때 무엇을 따를지 미리 정해 둠 |
 | 1. 라우팅 표 | 요청 유형별로 먼저 읽을 지침 파일과 스킬 | 상세 규칙을 전역에 넣지 않기 위한 장치 |
 | 2. 일하는 방식 | 사실/계산/추론 구분, 보고 4분류, 최신본 기준, 범위 밖 이슈 처리 | 모든 작업에 공통 |
 | 3. 분야별 핵심 원칙 | 분야마다 2~3줄. 가장 자주 틀리는 것만 | 지침 파일을 못 읽는 상황의 안전망 |
@@ -222,7 +276,7 @@ metadata:
 
 데이터셋은 사람이 손으로 다듬지 않습니다. 서식 규칙을 코드로 고정해 두고 시트 내용만 선언하면 어느 회사든 같은 모양으로 나옵니다. 이 문서는 그 규칙과, 실제 데이터셋 1건을 열어 실측한 값을 정리한 것입니다.
 
-화면은 모두 가상 회사 '가온테크' 샘플입니다. demo/build_ib_sample.py 로 다시 만들 수 있습니다.
+화면은 모두 가상 회사 '가온테크' 샘플입니다. [`demo/build_ib_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/build_ib_sample.py) 로 다시 만들 수 있습니다.
 
 ### 1. 색 규칙
 
@@ -237,7 +291,7 @@ metadata:
 
 ![KPI 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_kpi.png)
 
-KPI 시트의 금액은 전부 초록입니다. 재무제표 시트의 값을 100으로 나눠 억원으로 바꾼 링크이기 때문입니다. 성장률과 이익률은 같은 시트 안의 계산이라 검정입니다. 이 시트에는 파랑이 하나도 없어야 정상이고, 파랑이 보이면 누군가 값을 덮어쓴 것입니다.
+KPI 시트의 금액은 전부 초록입니다. 재무제표, FCF, 순차입금 시트의 값을 100으로 나눠 억원으로 바꾼 링크이기 때문입니다. 성장률과 이익률은 같은 시트 안의 계산이라 검정입니다. 이 시트에는 파랑이 하나도 없어야 정상이고, 파랑이 보이면 누군가 값을 덮어쓴 것입니다.
 
 ### 2. 시트 골격
 
@@ -292,10 +346,25 @@ KPI 시트의 금액은 전부 초록입니다. 재무제표 시트의 값을 10
 | 14 | 투자지표, 증권사 추정치 | 시세 사이트 |
 | 15 | 재무비율 (전부 10번 참조 수식) | 10번대 |
 | 16~2x | 배당, 주식수, 밸류에이션 배수, Historical PER/PBR | 공시, 시세 |
-| 30~4x | 매출 구성, FCF, 순차입금, 오버행, 주요 공시 | 공시 원문 |
+| 30~4x | 매출 구성(30), FCF(31), 순차입금(32), 오버행, 주요 공시 | 공시 원문, 공시 API, 10번대 |
 | 50~5x | 지분구조, 대량보유·임원 보고 | 공시 API |
 | 60~6x | 업종 KPI | 통계, IR |
 | 70~7x | 수급 (기관·외국인, 250거래일) | 시세 사이트 |
+| 99 | Check: 파일 안의 점검과 종합 결과 | 각 시트 링크 |
+
+샘플의 10개 시트는 이 체계를 그대로 따릅니다.
+
+| 샘플 시트 | 번호 | 내용 |
+|---|---|---|
+| 00_README | 00 | 데이터 사전, 색 규칙, 제외한 것, 정의 |
+| 01_KPI | 01 | 매출, 이익, FCF, 순차입금 (억원 링크) |
+| 10_FS_연간, 11_IS_분기 | 10~13 | 연간 손익·재무상태·현금흐름, 분기 손익 |
+| 15_재무비율 | 15 | 수익성, 안정성 비율 |
+| 20_밸류에이션 | 16~2x | 시가총액, EV 산출, 배수와 역산 |
+| 30_매출구성 | 30 | 부문별 매출·영업이익, 지역별 매출 |
+| 31_FCF | 31 | FCF, 마진, 현금전환율, FCF yield |
+| 32_순차입금 | 32 | 순차입금(리스 제외·포함), 순현금 |
+| 99_Check | 99 | 항등식, 분기합, 부문합, FCF, EV, 배수 역산 |
 
 **실측.** 국내 상장사 데이터셋 1건을 열어 센 결과입니다: 22개 시트, 수식 673개, 전 시트 격자선 꺼짐, 전 시트 틀 고정. 재무제표 4개 시트는 수식 0개(전부 파랑 원자료), KPI 시트는 값 68칸 중 43칸이 수식입니다. 원자료 층과 계산 층이 섞이지 않았다는 뜻입니다.
 
@@ -309,28 +378,62 @@ KPI 시트의 금액은 전부 초록입니다. 재무제표 시트의 값을 10
 
 "없는 것을 있는 줄 알지 않게" 하는 장치입니다. 데이터셋에는 숫자만 두고 해석은 넣지 않습니다. 해석이 섞이면 숫자를 믿을 수 없게 됩니다.
 
-### 6. 파일 안의 검증
+### 6. 밸류에이션: EV 산출과 배수 역산
 
-밸류에이션 시트는 각 배수 옆에 "금액 x 배수"를 다시 계산한 역산 시총을 둡니다. 세 줄이 모두 같은 시가총액으로 돌아와야 합니다.
+20_밸류에이션은 시가총액에서 EV를 만들고, 그 EV와 시총으로 배수를 낸 뒤 다시 시총으로 되돌려 봅니다.
+
+- **시가총액** = (발행주식수 − 자기주식) × 기준일 종가. 샘플: (500,000,000주 − 20,000,000주) × 2,000원 = 960,000 백만원.
+- **EV** = 시가총액 + 순차입금 + 비지배지분 − 관계기업투자. 샘플: 960,000 + 130,000 + 35,000 − 70,000 = 1,055,000. 순차입금은 32_순차입금, 비지배지분과 관계기업투자는 10_FS_연간을 링크하므로 초록입니다. 시총은 기준일, 나머지는 2025A 말 장부 잔액입니다.
+- **배수** (2025A): PER 20.2x (지배주주순이익 47,600), PBR 1.8x (지배주주지분 525,000), EV/EBITDA 11.0x (EBITDA 96,000), EV/Sales 2.0x (매출 530,000).
+- **역산**: 각 배수 옆에 "금액 x 배수"를 다시 계산한 역산 시총을 둡니다. EV 배수 두 줄은 금액 x 배수에서 (EV − 시총)을 빼서 시총으로 되돌립니다. 네 줄이 모두 960,000으로 돌아와야 하고, 한 줄이라도 다르면 금액, 배수, 주식수, EV 브리지 항목 중 하나가 틀린 것입니다.
 
 ![밸류에이션 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_valuation.png)
 
-EV/EBITDA 줄은 EV에서 순차입금을 빼서 시총으로 되돌립니다. 한 줄이라도 다르면 금액, 배수, 주식수, 순차입금 중 하나가 틀린 것입니다.
+### 7. 매출 구성, FCF, 순차입금
 
-Check 시트는 항등식, 분기합, 배수 역산을 한곳에 모으고 마지막에 종합 결과를 냅니다.
+재무제표 다음 층입니다. 세 시트의 금액은 10_FS_연간 링크(초록)와 같은 시트 수식(검정)이고, 원자료(파랑)는 30_매출구성의 부문·지역 금액뿐입니다. 부문합과 지역합은 시트 안의 '차이' 행으로, FCF와 EV는 99_Check에서 공시 계정으로 다시 계산해 대조합니다. 원천과 자동화 수준은 [데이터 원천 문서](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/08_data_sources.md) 3절에 있습니다.
+
+#### 30_매출구성
+
+![매출구성 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_revenue.png)
+
+- 부문 매출(파랑 원자료)을 더해 연결 매출(초록 링크)과 뺀 '차이' 행을 둡니다. 2025A: 플랫폼 310,000 + 솔루션 220,000 + 기타 6,000 + 내부거래 제거 (6,000) = 530,000, 차이 0.
+- 부문 영업이익 합 69,000이 연결 영업이익과 같은지도 같은 방식으로 봅니다.
+- 지역 매출: 국내 400,000, 해외 130,000. 해외 비중 24.5%. 비중의 분모는 내부거래 제거 후 연결 매출이라 세 부문 비중의 합은 100%를 조금 넘습니다(플랫폼 58.5%).
+- 한계: 실제 파이프라인에서 부문·지역 매출은 사업보고서 XML 표를 회사별로 해석해야 해서 완전 자동이 아닙니다. 7단계 체크리스트에 수작업 항목으로 나옵니다.
+
+#### 31_FCF
+
+![FCF 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_fcf.png)
+
+- FCF = 영업활동현금흐름 + 유형자산의 취득 + 무형자산의 취득. CAPEX는 유출이라 음수로 저장하고 `abs()` 를 쓰지 않습니다. 2025A: 86,000 + (41,000) + (7,000) = 38,000.
+- FCF 마진 7.2%, 현금전환율(FCF ÷ 지배주주순이익) 79.8%, 배당 (14,000) 후 FCF 24,000, FCF yield(시총 대비) 4.0%.
+- 한계: 실제 파이프라인의 CAPEX 수집 스크립트(`fetch_capex.py`)는 이 저장소에 없습니다.
+
+#### 32_순차입금
+
+![순차입금 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_netdebt.png)
+
+- 순차입금 = 총차입금 − 현금. 2025A: 240,000 − 110,000 = 130,000. 부호는 양수가 순차입, 음수가 순현금이고, 순현금 행은 그 반대 부호라 (130,000)으로 보입니다.
+- 리스부채 25,000은 기본 순차입금에서 빼고 '순차입금 (리스 포함)' 행에만 더합니다(155,000). EV 산출에는 리스 제외 값이 들어갑니다.
+- 순차입금/EBITDA 1.4x.
+
+### 8. 파일 안의 검증
+
+99_Check는 항등식, 분기합, 부문합, FCF, EV 브리지, 배수 역산 17개를 한곳에 모으고 마지막에 종합 결과(Master check)를 냅니다.
 
 ![Check 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/dataset_check.png)
 
-### 7. 저장 후 절차
+### 9. 저장 후 절차
 
 1. 파이썬으로 저장한 직후에는 수식 값이 비어 있습니다. Excel로 열어 재계산하고 다시 저장합니다.
 2. 오류 셀(`#REF!`, `#DIV/0!` 등)을 세어 0인지 확인합니다.
 3. 감사 도구를 돌립니다.
 4. 통과하면 `YYMMDD_회사명_Data` 폴더에 같은 이름으로 배포합니다.
 
-샘플의 검증 결과는 demo/output/verify_report.md 에 있습니다: 시트 8개, 오류 셀 0개, 점검 8개 통과.
+샘플의 검증 결과는 [`demo/output/verify_report.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/verify_report.md) 에 있습니다: 시트 10개, 오류 셀 0개, 점검 17개 전부 통과. 샘플은 Excel 대신 LibreOffice headless로도 재계산할 수 있습니다([`demo/verify_sample_lo.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample_lo.py)). LibreOffice는 값 계산과 캡처에만 쓰고, 배포 파일은 openpyxl이 만든 원본 그대로입니다.
 
-### 8. 코드에서는 어떻게 쓰나
+### 10. 코드에서는 어떻게 쓰나
 
 서식을 한 모듈에 상수로 두고, 시트는 행을 선언하기만 합니다. 값의 종류(input, formula, link)를 주면 색이 정해집니다.
 
@@ -350,7 +453,7 @@ kp.row("  % growth", [None, "=IFERROR(D6/C6-1,\"\")", ...], kind="formula", fmt=
 
 재무모델은 엑셀을 직접 고치지 않고 **입력 파일을 고쳐 다시 빌드**합니다. 손으로 고친 모델은 무엇이 바뀌었는지 추적할 수 없고, 다음 갱신 때 같은 수정을 다시 해야 하기 때문입니다.
 
-화면은 가상 회사 샘플입니다. demo/build_ib_sample.py 가 만들고 demo/verify_sample.py 가 검증합니다. 실제 엔진은 입력을 yaml 파일로 받고 유형과 점검 항목이 훨씬 많지만, 구조와 원칙은 같습니다.
+화면은 가상 회사 샘플입니다. [`demo/build_ib_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/build_ib_sample.py) 가 6개 시트(Cover, Inputs, Projection, DCF, SOTP, Checks)로 만들고, [`demo/verify_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample.py) (Windows + Excel) 또는 [`demo/verify_sample_lo.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample_lo.py) (LibreOffice, Linux·macOS·Windows) 가 3케이스 전부를 검증합니다. DCF와 SOTP 두 방법으로 주당가치를 냅니다. 실제 엔진은 입력을 yaml 파일로 받고 유형과 점검 항목이 훨씬 많지만, 구조와 원칙은 같습니다.
 
 ### 표준 흐름
 
@@ -372,6 +475,7 @@ kp.row("  % growth", [None, "=IFERROR(D6/C6-1,\"\")", ...], kind="formula", fmt=
 | Inputs | 모든 입력 | 파란 입력은 이 시트에만 |
 | Projection | 추정 손익과 현금흐름 | Inputs 링크와 같은 시트 수식만 |
 | DCF | 할인, 기업가치, 주당가치, 민감도 | 순차입금 정의를 명시 |
+| SOTP | 부문별 배수로 가치를 더해 주당가치 | 배수와 할인율은 Inputs의 판단값만 참조 |
 | Checks | 모델 점검 | FAIL이 하나라도 있으면 납품하지 않음 |
 
 #### Inputs: 입력은 한 시트에만
@@ -379,20 +483,20 @@ kp.row("  % growth", [None, "=IFERROR(D6/C6-1,\"\")", ...], kind="formula", fmt=
 ![Inputs 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/model_inputs.png)
 
 - 케이스별 가정은 Base, Bull, Bear를 나란히 두고 "선택값" 열이 스위치에 따라 하나를 고릅니다. 선택값은 Cover를 참조하므로 초록입니다.
-- 판단값(WACC, 영구성장률)은 노랑 바탕입니다. 에이전트가 정하지 않고 사람이 확인하는 자리입니다.
+- 판단값(WACC, 영구성장률, SOTP의 부문 배수와 지주 할인)은 노랑 바탕입니다. 에이전트가 정하지 않고 사람이 확인하는 자리입니다.
 - 입력마다 근거 열이 있습니다. 실제 모델에서는 출처와 기준일을 적습니다.
 
 #### Cover: 스위치 한 칸
 
 ![Cover 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/model_cover.png)
 
-케이스를 값 붙여넣기로 따로 만들지 않습니다. 스위치를 1에서 2로 바꾸면 전 시트가 다시 계산됩니다. 정적인 시나리오 표는 가정을 고쳤을 때 갱신되지 않아 틀린 숫자가 남습니다.
+C6이 스위치, C8이 DCF 주당가치, C10이 Master check, C11이 SOTP 주당가치(참고)입니다. 케이스를 값 붙여넣기로 따로 만들지 않습니다. 스위치를 1에서 2로 바꾸면 전 시트가 다시 계산됩니다. 정적인 시나리오 표는 가정을 고쳤을 때 갱신되지 않아 틀린 숫자가 남습니다.
 
 #### Projection: 수식 안에 숫자 없음
 
 ![Projection 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/model_projection.png)
 
-머리글 위의 띠로 실적(남색)과 추정(하늘색) 구간을 구분합니다. 추정 구간의 모든 값은 Inputs를 참조합니다. `=C6*1.08` 처럼 수식 안에 숫자를 넣으면 가정이 숨어 버려서 린터가 실패로 처리합니다.
+머리글 위의 띠로 실적(남색)과 추정(하늘색) 구간을 구분합니다. 추정 구간의 모든 값은 Inputs를 참조합니다. `=C6*1.08` 처럼 수식 안에 숫자를 넣으면 가정이 숨어 버려서 린터가 실패로 처리합니다. Projection 수식에는 가정 숫자가 하나도 없습니다(성장률 계산의 `1+`, `-1` 같은 구조 상수만 있음). DCF와 SOTP에 남은 숫자는 두 종류뿐입니다: 백만원을 원으로 바꾸는 단위 환산 `1000000`, 민감도 표의 간격 ±0.01.
 
 #### DCF: 기업가치에서 주당가치까지
 
@@ -402,25 +506,58 @@ kp.row("  % growth", [None, "=IFERROR(D6/C6-1,\"\")", ...], kind="formula", fmt=
 - 영구가치 비중을 따로 표시합니다. 이 비중이 너무 높으면 추정기간이 아니라 말기 가정이 가치를 정하는 모델입니다.
 - 민감도 표는 붙여넣은 값이 아니라 살아 있는 수식입니다. 가운데 칸이 위의 주당가치와 같은지 Checks가 대조합니다.
 
+#### SOTP: 부문별 배수 합산
+
+![SOTP 시트](https://raw.githubusercontent.com/dhpark19955-code/claude-code-data-portfolio/main/docs/img/model_sotp.png)
+
+부문마다 맞는 배수로 가치를 매겨 더합니다. 2026E Base 기준입니다(단위 백만원).
+
+| 항목 | 계산 | 값 |
+|---|---|---|
+| 플랫폼 | 매출 334,854 → EBITDA 73,668 (마진 22%) × EV/EBITDA 9.0x | 663,011 |
+| 솔루션 | 매출 237,546 × EV/Sales 1.2x | 285,055 |
+| 영업 EV | 부문 가치 합계 | 948,066 |
+| (+) 관계기업 | 70,000 × (1 − 지주 할인 30%) | 49,000 |
+| (−) 순차입금 | 데이터셋 32_순차입금 | 130,000 |
+| (−) 비지배지분 | 데이터셋 10_FS_연간 | 35,000 |
+| 주주가치 | | 832,066 |
+| 주당가치 | 주주가치 ÷ 유통주식수 480,000,000주 | 1,733원 |
+
+- 암묵적 EV/EBITDA(영업 EV ÷ 2026E 연결 EBITDA)는 8.9x입니다. 부문 배수를 정한 결과가 연결 기준으로 몇 배인지 보여 줘서, 배수가 과하거나 모자란지 한눈에 봅니다.
+- DCF 브리지는 순차입금만 빼지만, SOTP는 비영업자산(관계기업)과 비지배지분까지 반영합니다.
+- 판단값은 세 개입니다: 플랫폼 EV/EBITDA 9.0x, 솔루션 EV/Sales 1.2x, 지주 할인 30%. 모두 Inputs에 노랑 바탕으로 있고 SOTP 시트에는 링크만 있습니다.
+
+| 케이스 | DCF 주당가치 | SOTP 주당가치 |
+|---|---|---|
+| Base | 1,572 | 1,733 |
+| Bull | 2,105 | 1,807 |
+| Bear | 1,076 | 1,660 |
+
+SOTP는 케이스에 따라 매출만 바뀌고 배수와 마진은 고정이라 DCF보다 범위가 좁습니다. 그래서 Bull에서는 DCF(2,105원)가 SOTP(1,807원)보다 높습니다.
+
+한계: 샘플의 부문 비중(플랫폼 58.5%)은 데이터셋 30_매출구성의 2025A 값을 그대로 쓰고 2026E에도 같다고 둡니다. SOTP는 데이터셋이 아니라 이 모델 워크플로우에서 만드는 것이고, 샘플의 배수와 할인율은 가상 판단값입니다.
+
 ### 3관문
 
 | 관문 | 무엇을 보나 | 샘플 결과 |
 |---|---|---|
-| Check | Excel 재계산 후 오류 셀 0, 내부 점검 FAIL 0 | 오류 셀 0, 점검 6개 통과 |
+| Check | 재계산 후 오류 셀 0, 내부 점검 FAIL 0 | 3케이스 모두 오류 셀 0, Master check PASS |
 | Lint | 구조 규칙 위반 (아래 금지 목록) | 샘플에는 린터 미포함 |
-| 독립 재계산 | 엑셀 수식과 무관하게 파이썬으로 다시 계산해 대조 | 3케이스 모두 차이 0.01원 미만 |
+| 독립 재계산 | 엑셀 수식과 무관하게 파이썬으로 다시 계산해 대조 | 3케이스 DCF·SOTP 모두 차이 0.0000원 |
 
 **모든 케이스를 봅니다.** Base만 확인하고 통과시키면 다른 케이스에서만 깨지는 수식을 놓칩니다. 검증 스크립트는 스위치를 1, 2, 3으로 바꿔 가며 각각 재계산하고 대조합니다.
 
-| 케이스 | 엑셀 주당가치 | 독립 재계산 | Master check |
-|---|---|---|---|
-| Base | 1,572 | 1,572 | PASS |
-| Bull | 2,105 | 2,105 | PASS |
-| Bear | 1,076 | 1,076 | PASS |
+| 케이스 | DCF 엑셀 | DCF 독립 재계산 | SOTP 엑셀 | SOTP 독립 재계산 | Master check |
+|---|---|---|---|---|---|
+| Base | 1,572 | 1,572 | 1,733 | 1,733 | PASS |
+| Bull | 2,105 | 2,105 | 1,807 | 1,807 | PASS |
+| Bear | 1,076 | 1,076 | 1,660 | 1,660 | PASS |
 
-출처: demo/output/verify_report.md (가상 데이터)
+출처: [`demo/output/verify_report.md`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/verify_report.md) (가상 데이터)
 
-독립 재계산은 라벨 문자열로 셀을 찾지 않습니다. 라벨이 바뀌면 엉뚱한 셀을 읽고도 통과할 수 있기 때문에, 빌더가 알려 준 셀 주소를 쓰고 찾은 개수를 확인합니다.
+검증기는 두 가지입니다. [`demo/verify_sample.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample.py) 는 Windows의 Excel로 재계산하고, [`demo/verify_sample_lo.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/verify_sample_lo.py) 는 LibreOffice headless로 같은 검증을 해서 Linux, macOS, Windows에서 돕니다. 위 표는 LibreOffice 검증기로 낸 결과이고, 엑셀 수식 값과 [`demo/independent.py`](https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/independent.py) 의 독립 재계산 차이가 3케이스 DCF·SOTP 모두 0.0000원입니다. LibreOffice는 값 계산과 화면 캡처에만 쓰고, 배포하는 xlsx는 openpyxl이 만든 원본 그대로입니다.
+
+실제 엔진의 검증은 라벨 문자열이 아니라 고유 키로 셀을 찾고 찾은 개수를 확인합니다. 라벨이 바뀌면 엉뚱한 셀을 읽고도 통과할 수 있기 때문입니다. 샘플 검증기는 이를 단순화해 B열 라벨이 정확히 같은 첫 행을 읽고, 라벨이 없으면 오류로 멈춥니다(찾은 개수는 확인하지 않음).
 
 ### 하지 않는 것
 
