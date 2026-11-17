@@ -5,7 +5,7 @@
 > AI 에이전트를 지휘해 비정형 공시·IR 원자료를 **검증 가능한 분석용 데이터셋과 재무모델**로 만듭니다.
 > 빠르게 만드는 것보다, 틀린 숫자를 걸러내고 같은 결과를 다시 만들 수 있게 하는 데 집중했습니다.
 
-작성자: 박도현 / [dhpark19955@gmail.com](mailto:dhpark19955@gmail.com) / 투자·FP&A 실무
+작성자: 박도현 / [dhpark19955@gmail.com](mailto:dhpark19955@gmail.com) 
 
 ## 한눈에 보기
 
