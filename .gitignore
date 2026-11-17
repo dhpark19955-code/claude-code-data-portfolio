@@ -1,0 +1,19 @@
+# 비밀값
+.env
+*.env
+keys.*
+*.pem
+*.key
+
+# 원자료와 산출물 (공개 저장소에 올리지 않음)
+*.xlsx
+*.xlsm
+*.pdf
+data/
+raw/
+
+# 환경
+__pycache__/
+*.pyc
+.venv/
+.claude/settings.local.json
