@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finprep"
+version = "0.1.0"
+description = "공시 API 재무제표 원자료를 분기 tidy 데이터로 정리하고 기계 감사하는 전처리 패키지"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "박도현", email = "dhpark19955@gmail.com" }]
+dependencies = ["pandas>=2.0"]
+
+[project.optional-dependencies]
+dart = ["requests>=2.31"]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+finprep = "finprep.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+# originals/ 는 실사용 원본을 그대로 보존하는 폴더라 린트 대상에서 뺀다
+extend-exclude = ["originals", "demo", "tools"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+# 표준계정 XBRL ID 는 자를 수 없는 긴 문자열이다
+"src/finprep/sample.py" = ["E501"]

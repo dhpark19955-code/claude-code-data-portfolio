@@ -1,0 +1,3 @@
+# 샘플 산출물은 OS 와 무관하게 같은 바이트여야 CI 의 최신본 검사가 통과한다
+data/sample/** text eol=lf
+reports/sample/** text eol=lf

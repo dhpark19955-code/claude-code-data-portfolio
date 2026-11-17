@@ -44,7 +44,7 @@ footer{margin-top:56px;color:var(--sub);font-size:13px}
 <main>
 <h1>공시·IR 원자료를<br>검증 가능한 데이터셋으로</h1>
 <p class="lead">AI 에이전트를 지휘해 비정형 공시·IR 원자료를 분석용 데이터셋으로 만듭니다. 빠르게 만드는 것보다, 틀린 숫자를 걸러내고 같은 결과를 다시 만들 수 있게 하는 데 집중했습니다.</p>
-<p class="meta">박도현 · <a href="mailto:dhpark19955@gmail.com">dhpark19955@gmail.com</a> · 투자·FP&amp;A 실무 · <a href="README.md">저장소 README</a></p>
+<p class="meta">박도현 · <a href="mailto:dhpark19955@gmail.com">dhpark19955@gmail.com</a> · 투자·FP&amp;A 실무 · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio">저장소 README</a></p>
 
 <div class="stats">
   <div class="stat"><b>18</b><span>기업 데이터셋<br>국내 12, 해외 4, 비상장 2</span></div>
@@ -61,7 +61,7 @@ footer{margin-top:56px;color:var(--sub);font-size:13px}
   <figure><img src="docs/img/model_inputs.png" alt="모델 Inputs 시트"><figcaption>모델: 입력은 한 시트에만</figcaption></figure>
   <figure><img src="docs/img/model_dcf.png" alt="모델 DCF 시트"><figcaption>모델: 기업가치에서 주당가치까지</figcaption></figure>
 </div>
-<p><a href="docs/06_ib_format_spec.md">IB 양식 규격</a> · <a href="docs/07_model_build.md">모델 빌드</a> · <a href="docs/05_setup_detail.md">설정 상세</a> · <a href="demo/output/verify_report.md">검증 리포트</a> · <a href="originals/README.md">원본 코드와 설정</a></p>
+<p><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/06_ib_format_spec.md">IB 양식 규격</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/07_model_build.md">모델 빌드</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/05_setup_detail.md">설정 상세</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/verify_report.md">검증 리포트</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/originals/README.md">원본 코드와 설정</a></p>
 
 <h2>작업 흐름</h2>
 <ol class="flow">
@@ -74,25 +74,25 @@ footer{margin-top:56px;color:var(--sub);font-size:13px}
     <h3>1. 전처리 파이프라인</h3>
     <p>공시 API 응답은 기간 기준, 부호, 단위, 계정명이 제각각이라 그대로 쓰면 틀립니다.</p>
     <ul><li>종목명 하나로 수집부터 배포까지 8단계, 수집 포함 10~15분</li><li>분기 합성, 현금흐름 부호, 단위 통일, 계정명 별칭 규칙</li><li>자동으로 못 한 것은 체크리스트로 따로 출력</li></ul>
-    <p style="margin:10px 0 0"><a href="docs/01_preprocessing.md">자세히</a></p>
+    <p style="margin:10px 0 0"><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/01_preprocessing.md">자세히</a></p>
   </div>
   <div class="case">
     <h3>2. 비정형·해외 원자료</h3>
     <p>부문 매출, 사채 조건, 분기 실적 세부는 원문과 HTML 표, PDF 안에 있습니다.</p>
     <ul><li>국내 공시 원문, 미국 XBRL, 실적발표 HTML 표, IR PDF, 홍콩 공시</li><li>출처가 충돌하면 병기, 막힌 경로는 우회하지 않고 공개 대체 출처 사용</li></ul>
-    <p style="margin:10px 0 0"><a href="docs/02_unstructured_parsing.md">자세히</a></p>
+    <p style="margin:10px 0 0"><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/02_unstructured_parsing.md">자세히</a></p>
   </div>
   <div class="case">
     <h3>3. 검증 체계</h3>
     <p>AI가 만든 숫자는 그럴듯해서 더 위험합니다. 기계 감사와 분리된 검수를 뒀습니다.</p>
     <ul><li>회계 항등식, 비율 범위, 배수 역산, 부문합 대조, 단위 라벨</li><li>부문손익 열 밀림, 100배 단위 오류, 순차입금 누락을 실제로 잡음</li><li>정정이 되살아나지 않도록 감사 통과본 위에 갱신</li></ul>
-    <p style="margin:10px 0 0"><a href="docs/03_audit.md">자세히</a></p>
+    <p style="margin:10px 0 0"><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/03_audit.md">자세히</a></p>
   </div>
   <div class="case">
     <h3>4. Claude Code 운영</h3>
     <p>세션이 바뀌어도 같은 품질이 나오도록 작업 환경 자체를 설계했습니다.</p>
     <ul><li>작업 유형별 지침 라우팅, 스킬, 지휘자·일꾼·점검자 분업</li><li>실패를 메모로 남겨 재발 방지, 사람이 멈추는 지점 명시</li><li>다른 PC로 옮기는 설치기와 점검 도구</li></ul>
-    <p style="margin:10px 0 0"><a href="docs/04_claude_code_ops.md">자세히</a></p>
+    <p style="margin:10px 0 0"><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/docs/04_claude_code_ops.md">자세히</a></p>
   </div>
 </div>
 
@@ -108,9 +108,11 @@ footer{margin-top:56px;color:var(--sub);font-size:13px}
 </div>
 
 <h2>데모</h2>
-<p>가상 데이터로 전처리 규칙 5가지와 감사 7항목을 재현합니다. 키, 네트워크, 외부 패키지가 필요 없습니다.</p>
-<p><code>python -I -X utf8 demo/preprocess_demo.py</code></p>
-<p><a href="demo/output/audit_log.md">감사 로그</a> · <a href="demo/preprocess_demo.py">코드</a> · <a href="pitfalls.md">함정 목록</a></p>
+<p>전처리와 감사를 실행 가능한 파이썬 패키지(<code>finprep</code>)로 만들었습니다. 공시 API 응답과 같은 모양의 가상 5개사 원자료 2,679행을 분기 tidy 데이터로 정리하고 감사 37건을 돌립니다. 키와 네트워크가 필요 없고, 테스트 67개가 Windows·Ubuntu에서 매 커밋마다 돕니다.</p>
+<p><code>pip install -e ".[dev]"</code> → <code>python -m finprep demo</code></p>
+<p><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/tree/main/src/finprep">패키지 코드</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/reports/sample/quality_report.md">품질 리포트</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/tree/main/tests">테스트</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/actions/workflows/ci.yml">CI</a></p>
+<p>표준 라이브러리만 쓰는 축약판도 있습니다: <code>python -I -X utf8 demo/preprocess_demo.py</code></p>
+<p><a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/output/audit_log.md">감사 로그</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/demo/preprocess_demo.py">코드</a> · <a href="https://github.com/dhpark19955-code/claude-code-data-portfolio/blob/main/pitfalls.md">함정 목록</a></p>
 
 <footer>모든 수치는 공개 공시와 공개 시세에서 수집했습니다. 실제 파이프라인 모듈과 Claude Code 설정 원본은 originals/ 에 개인 경로와 키 위치를 가려 실었고, 키와 데이터셋 원본은 포함하지 않았습니다. 데모와 샘플은 가상 데이터로 새로 작성했습니다.</footer>
 </main>
